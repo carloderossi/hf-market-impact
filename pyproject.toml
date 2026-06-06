@@ -1,0 +1,21 @@
+[project]
+name = "hf-market-impact"
+version = "0.1.0"
+description = "High-frequency market impact model for monetary policy operations"
+authors = [{ name = "Carlo", email = "carlo@example.com" }]
+requires-python = ">=3.10"
+dependencies = [
+    "numpy",
+    "pandas",
+    "scikit-learn",
+    "matplotlib",
+    "seaborn",
+    "doubleml",
+    "pyarrow",
+    "econml",
+    "lightgbm",
+    "xgboost"
+]
+
+[tool.uv]
+# optional uv-specific settings if you use them
