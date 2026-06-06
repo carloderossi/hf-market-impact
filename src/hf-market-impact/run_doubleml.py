@@ -33,7 +33,7 @@ def main():
 
     # Save JSON version of the key results
     results = {
-        "coef": float(dml.coef),
+        "coef": float(dml.coef[0]), # dml.coef is a 1‑element numpy array.
         "se": float(dml.se),
         "t_stat": float(dml.t_stat),
         "p_value": float(dml.pval)

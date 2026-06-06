@@ -9,20 +9,6 @@ def run_doubleml(df):
     """
     Run a DoubleML partially linear regression (PLR) model
     to estimate the causal effect of policy operations on returns.
-
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Synthetic high-frequency market data containing:
-        - return
-        - operation_size
-        - spread
-        - volume
-
-    Returns
-    -------
-    dml_plr : DoubleMLPLR
-        Fitted DoubleML model with summary, coef, p-values, etc.
     """
 
     # Outcome (Y)
@@ -52,15 +38,23 @@ def run_doubleml(df):
         random_state=42
     )
 
-    # DoubleML PLR model
+    # NEW: ml_l must be provided explicitly
+    ml_l = RandomForestRegressor(
+        n_estimators=300,
+        max_depth=6,
+        min_samples_leaf=5,
+        random_state=42
+    )
+
+    # DoubleML PLR model (new API)
     dml_plr = DoubleMLPLR(
         data,
-        ml_g=ml_g,
-        ml_m=ml_m,
+        # ml_g=ml_g, # ml_g is ignored unless you use a different score.
+        ml_m=ml_m, # (model for D | X)
+        ml_l=ml_l, # (model for D | X in the score)
         n_folds=5
     )
 
-    # Fit model
     dml_plr.fit()
 
     return dml_plr
