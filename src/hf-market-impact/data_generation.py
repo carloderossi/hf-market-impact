@@ -25,10 +25,23 @@ def simulate_market(n_steps=10_000, seed=42):
     impact_window = 30
     impact_mu = np.zeros(n_steps)
     impact_sigma = np.zeros(n_steps)
+
+    # Use the volume array directly (df doesn't exist yet)
+    vol_mean = volume.mean()
+    true_effect = np.zeros(n_steps)
+
     for t in op_times:
         end = min(n_steps, t + impact_window)
-        impact_mu[t:end] += 0.0002 * ops[t]
-        impact_sigma[t:end] += 0.0003 * ops[t]
+
+        # Heterogeneous drift impact based on volume regime
+        effect_t = 0.002 * ops[t] * (volume[t] / vol_mean)
+        impact_mu[t:end] += effect_t
+
+        # Volatility bump
+        impact_sigma[t:end] += 0.010 * ops[t]
+        
+        # Store the true effect for comparison
+        true_effect[t:end] = effect_t
 
     # apply impact to price
     eps2 = rng.normal(size=n_steps)
@@ -41,5 +54,6 @@ def simulate_market(n_steps=10_000, seed=42):
         "volume": volume,
         "operation_size": ops,
     })
+    df["true_effect"] = true_effect
     df["return"] = df["price"].diff().fillna(0)
     return df
