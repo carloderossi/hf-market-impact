@@ -84,13 +84,13 @@ def build_job(env: Environment) -> command:
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
     job_name = f"hf-market-impact-train-{timestamp}"
     display_name = (
-        f"High Frequency Marcket Impact "
+        f"High Frequency Marcket Impact ({timestamp})"
     )
 
     # Build the CLI command string — mirrors what was in the YAML
     command_str = (
-        f"python run_models.py"
-        f" --output_path ./"
+        f"python ./hf-market-impact/run_models.py"
+        f" --output_path ./outputs"
     )
 
     job = command(
@@ -197,28 +197,17 @@ def read_eval_metrics(ml_client: MLClient, job_name: str) -> dict:
 # Summary printer
 # ---------------------------------------------------------------------------
 
-def print_summary(job_name: str, job_status: str, model: Model | None, args: argparse.Namespace):
+def print_summary(job_name: str, job_status: str):
     width = 80
     bar = "─" * width
     print(f"\n┌{bar}┐")
-    print(f"│{'  Credit Risk MLOps — Job Summary':^{width}}│")
+    print(f"│{'  High Frequency Marcket Impact — Job Summary':^{width}}│")
     print(f"├{bar}┤")
     rows = [
         ("Job name",       job_name),
-        ("Mode",           args.mode),
         ("Final status",   job_status),
-        ("Compute",        args.compute_cluster),
         ("Experiment",     EXPERIMENT_NAME),
     ]
-    if model:
-        rows += [
-            ("Model name",    model.name),
-            ("Model version", model.version),
-            ("Model status",  model.tags.get("champion_challenger_status", "n/a")),
-            ("ROC-AUC",       model.tags.get("roc_auc", "n/a")),
-            ("Traffic %",     model.tags.get("traffic_pct", "n/a")),
-            ("Drift trigger", model.tags.get("drift_trigger", "n/a")),
-        ]
     for label, value in rows:
         print(f"│  {label:<22}{str(value):<{width - 24}}│")
     print(f"└{bar}┘\n")
@@ -270,14 +259,12 @@ def main():
     job_name, job_status = submit_and_wait(ml_client, job)
 
     if job_status != "Completed":
-        log.error("Job did not complete successfully (status=%s). Skipping registration.", job_status)
+        log.error("Job did not complete successfully (status=%s).", job_status)
         print_summary(job_name, job_status, None, args)
         sys.exit(1)
 
     # ── Read metrics from job artifact ───────────────────────────────────────
-    metrics = {}
-    if not args.skip_registration:
-        metrics = read_eval_metrics(ml_client, job_name)
+    # metrics = read_eval_metrics(ml_client, job_name)
 
     # ── Summary ──────────────────────────────────────────────────────────────
     print_summary(job_name, job_status)

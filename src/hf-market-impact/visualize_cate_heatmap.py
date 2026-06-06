@@ -42,3 +42,4 @@ if __name__ == "__main__":
     main()
 
 ## cls; & "C:/Program Files/Python313/python.exe" c:/Carlo/projects/hf-market-impact/src/hf-market-impact/visualize_cate_heatmap.py --results_path C:\Carlo\projects\hf-market-impact\outputs\test_run
+## cls; & "C:/Program Files/Python313/python.exe" c:/Carlo/projects/hf-market-impact/src/hf-market-impact/visualize_cate_heatmap.py --results_path C:\Carlo\projects\hf-market-impact\outputs\az-ml-runs

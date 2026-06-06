@@ -24,8 +24,10 @@ def main():
     print("Running DoubleML pipeline...")
     dml = run_doubleml(df)
 
+    os.makedirs(args.output_path, exist_ok=True)
+    
     # 3. Save results
-    print("Saving results...")
+    print(f"Saving results to '{args.output_path}'...")
     df.to_csv(os.path.join(args.output_path, "synthetic_data.csv"), index=False)
 
     with open(os.path.join(args.output_path, "doubleml_summary.txt"), "w") as f:
