@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
-from hf_impact.data_generation import simulate_market
+from data_generation import simulate_market
 
 
 def plot_price(df):
